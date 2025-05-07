@@ -70,10 +70,15 @@ End-to-end API test automation framework using **Java**, **Cucumber BDD**, and *
 
 ---
 
-### 🔃 CI/CD Flow: Development to QA
+## 🔃 CI/CD Flow: Development to QA
 
-#### 1. Jenkins Pipeline – Dev Repo (Triggers QA Automation)
-```groovy
+This project supports CI/CD integration through Jenkins to automate the testing pipeline from Dev commits to QA execution and reporting.
+
+---
+
+### 🧩 1. Jenkins Pipeline – Dev Repository (Triggers QA Automation)
+
+```groovy```
 pipeline {
     agent any
     stages {
@@ -124,51 +129,78 @@ pipeline {
 }
 ## 🌐 Webhook Setup for Auto-Triggering Builds
 
-To automatically trigger Jenkins builds on every commit to the Dev repository, follow these steps:
+Integrate GitHub with Jenkins using webhooks to trigger builds automatically on each push.
 
-### 1. Launch Jenkins Locally
+---
 
-Start Jenkins on your local machine (usually runs at `http://localhost:8080`).
+### 🧱 Step-by-Step Setup
 
-### 2. Create Jenkins Pipeline Jobs
+#### 🔹 1. Launch Jenkins Locally
 
-- **Dev Job**: Builds the dev code and triggers QA automation.
-- **QA Job**: Executes tests and generates Allure reports.
+Start Jenkins on your local machine:
 
-### 3. Expose Jenkins to the Internet (Using Ngrok)
 
-Use Ngrok to make your local Jenkins accessible to GitHub:
+Ensure your Jenkins server is accessible and the necessary plugins (Git, GitHub, Pipeline, Maven, Allure) are installed.
+
+---
+
+#### 🔹 2. Expose Jenkins Publicly Using Ngrok
+
+Jenkins is local, so use [Ngrok](https://ngrok.com/) to make it publicly accessible:
 
 ```bash
+```
 ngrok http http://localhost:8080
-### 4. Configure GitHub Webhook
+### 🔹 3. Create Jenkins Pipeline Jobs
 
-To allow GitHub to trigger your local Jenkins job:
+Set up two pipeline jobs in Jenkins:
 
-#### 🔧 Steps:
+- **Dev Job**: Builds the development code and triggers the QA pipeline.
+- **QA Job**: Executes automated tests and generates Allure reports.
 
-1. Navigate to your **Dev GitHub repository**.
+✅ *Tip: Make sure both jobs run successfully at least once manually before integrating with GitHub.*
+
+---
+
+### 🔹 4. Add GitHub Webhook
+
+Integrate GitHub with Jenkins to trigger builds on every push.
+
+#### 🚀 Steps:
+
+1. Open your **Dev GitHub Repository**.
 2. Go to:  
    `Settings` → `Webhooks` → `Add webhook`
-3. In the **Payload URL**, enter the following format:
+3. In the **Payload URL**, use the format:
 
 
-Replace:
+**Replace:**
 - `<username>` → Your Jenkins username
-- `<token>` → Jenkins API token (generate from Jenkins user settings)
-- `<ngrok-id>` → The public ID from Ngrok (e.g., `abcd1234`)
-- `<DevJobName>` → Your actual Jenkins Dev job name
+- `<token>` → Jenkins API token  
+  *(Jenkins → User → Configure → API Token)*
+- `<ngrok-id>` → Your public Ngrok domain (e.g., `abcd1234`)
+- `<DevJobName>` → Exact Jenkins job name for Dev pipeline
 
-4. Set **Content type** to:
+4. **Content Type**:  
 
+5. **Event Trigger**:  
+Select:
 
-5. Choose **Just the push event**.
-6. Click **Add webhook**.
+6. Click **Add Webhook**.
 
-#### ✅ Result:
+---
 
-Every time you push a commit to the Dev repo:
-- GitHub sends a POST request to Jenkins
-- The Dev pipeline is triggered
-- On success, QA automation runs
-- Allure reports are generated automatically
+### ✅ What Happens Now?
+
+Every time a commit is pushed to the **Dev GitHub repo**:
+
+1. GitHub triggers a POST request to Jenkins via Ngrok.
+2. Jenkins runs the **Dev pipeline job**.
+3. On successful execution, Jenkins automatically starts the **QA job**.
+4. QA job runs all test cases and generates a detailed **Allure Report**.
+
+> This ensures a seamless, automated CI/CD pipeline from development to quality assurance — with full test visibility.
+
+---
+
+> ⚠️ **Note:** ChatGPT can make mistakes. Always verify scripts and credentials before using them in production.
