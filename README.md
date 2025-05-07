@@ -89,3 +89,86 @@ pipeline {
         }
     }
 }
+pipeline {
+    agent any
+    tools {
+        maven 'Maven 3.6.3'
+        allure 'Allure'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: '<GIT_REPO_URL>', branch: '<BRANCH_NAME>'
+            }
+        }
+        stage('Build and Test') {
+            steps {
+                sh 'mvn clean test'
+            }
+        }
+        stage('Generate Allure Report') {
+            steps {
+                sh 'mvn allure:report'
+            }
+        }
+    }
+    post {
+        always {
+            allure([
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'target/allure-results']]
+            ])
+        }
+    }
+}
+## 🌐 Webhook Setup for Auto-Triggering Builds
+
+To automatically trigger Jenkins builds on every commit to the Dev repository, follow these steps:
+
+### 1. Launch Jenkins Locally
+
+Start Jenkins on your local machine (usually runs at `http://localhost:8080`).
+
+### 2. Create Jenkins Pipeline Jobs
+
+- **Dev Job**: Builds the dev code and triggers QA automation.
+- **QA Job**: Executes tests and generates Allure reports.
+
+### 3. Expose Jenkins to the Internet (Using Ngrok)
+
+Use Ngrok to make your local Jenkins accessible to GitHub:
+
+```bash
+ngrok http http://localhost:8080
+### 4. Configure GitHub Webhook
+
+To allow GitHub to trigger your local Jenkins job:
+
+#### 🔧 Steps:
+
+1. Navigate to your **Dev GitHub repository**.
+2. Go to:  
+   `Settings` → `Webhooks` → `Add webhook`
+3. In the **Payload URL**, enter the following format:
+
+
+Replace:
+- `<username>` → Your Jenkins username
+- `<token>` → Jenkins API token (generate from Jenkins user settings)
+- `<ngrok-id>` → The public ID from Ngrok (e.g., `abcd1234`)
+- `<DevJobName>` → Your actual Jenkins Dev job name
+
+4. Set **Content type** to:
+
+
+5. Choose **Just the push event**.
+6. Click **Add webhook**.
+
+#### ✅ Result:
+
+Every time you push a commit to the Dev repo:
+- GitHub sends a POST request to Jenkins
+- The Dev pipeline is triggered
+- On success, QA automation runs
+- Allure reports are generated automatically
