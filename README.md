@@ -201,6 +201,4 @@ Every time a commit is pushed to the **Dev GitHub repo**:
 
 > This ensures a seamless, automated CI/CD pipeline from development to quality assurance — with full test visibility.
 
----
 
-> ⚠️ **Note:** ChatGPT can make mistakes. Always verify scripts and credentials before using them in production.
