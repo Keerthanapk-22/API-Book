@@ -1,87 +1,172 @@
-# 📚 Bookstore API Automation with CI/CD Integration
-  ## Book store E2E API Automation using Cucumber BDD+ TestNG in Java
+🚀 Bookstore API Test Automation with CI/CD Integration
+End-to-end API test automation framework using Java, Cucumber BDD, and TestNG, integrated with Allure Reports and CI/CD pipelines via Jenkins.
 
-## 💻 Tech Stack Overview
+🧰 Tech Stack
+Component	Details
+🧠 IDE	IntelliJ IDEA
+☕ Language	Java 11+
+🔍 Framework	Cucumber BDD + Rest Assured for clean, readable API tests
+🛠 Build Tool	Maven for dependency management and build automation
+✅ Test Runner	TestNG for flexible test execution, retries, and parallel runs
+📊 Reporting	Allure for insightful, interactive test reports
 
-| Component               | Description                                                                 
-|-------------------------|-----------------------------------------------------------------------------
-| 🧠 **IDE**              | IntelliJ IDEA                                                               
-| ☕ **Language**          | Java 11+                                                                    
-| 🔄 **Framework**        | Rest Assured+ Cucumber BDD – For readable, behavior-driven API automation 
-| 🛠 **Build Tool**       | Maven – For dependency management & CI/CD integrations 
-| ✅ **Test Execution**   | TestNG Chosen for test execution, parallel runs, retries & CI/CD integration
-| 📊 **Reporting**        | Allure ReportFor visual insights into test runs, categorization, and history
+💡 Why This Stack?
+✅ TestNG Over JUnit
+Excellent for non-Spring Boot architectures
 
---------------------
-## 🧪 Why This Stack?
+Built-in retry logic, parallel execution, and listener support
 
-### ✅ TestNG over JUnit
-- Better suited for **non-Spring Boot** projects.
-- Robust test orchestration: **retry mechanisms**, **parallel execution**, **custom listeners**.
-- Seamless CI/CD compatibility.
+CI-friendly configuration
 
-### 📈 Allure Report Advantages
-- Rich UI with detailed **test case visualization**.
-- Categorizes failures:
-  - **Test Failures** → Assertion errors, unstable test scripts.
-  - **Product Failures** → Server errors (5xx), broken environments.
-- Maintains history & trends of failure across builds.
-- Integrated easily with **CI pipelines** (e.g., Jenkins, GitHub Actions).
+📈 Allure Reporting Benefits
+Interactive test history and failure trends
 
-------------------------------
-**How to Set Up & Run the Project**
+Visual breakdown of test vs product failures
 
- **Prerequisites**
- 
-1) Java 11+
-2)  Maven
+Easily integrated into Jenkins/GitHub Actions pipelines
 
- 1) Create a new maven project for automation or clone from the github if already present
- 2) Fork the Dev repo given and make it up in the local machine , to run the automation (The steps will be present in README.md of Dev repo)
- 3) End Points automated covered in this automation are:
-   
-     * POST /signup – To sign up to the book store
-     * POST /login – To login after sign up and generate a token
-     * POST /books – Create a new book
-     * PUT /books/{id} – Update an existing book
-     * GET /books/{id} – Fetch a book by ID
-     * GET /books – Fetch all books
-     * DELETE /books/{id} – Delete a book
+⚙️ Project Setup
+🔧 Prerequisites
+Java 11+
 
-6) Execute the automation suite by running the Cucumber Runner. This will trigger all feature scenarios written in a human-readable format, ensuring comprehensive test coverage and clear visibility into the executed test cases.
-7) Once done , Allure- reports will be generate and can be seen under target/allure-results
+Maven installed and configured
 
-# **🚀 CI/CD Integration**
+🛠 Getting Started
+Create a new Maven project or fork this repo.
 
-## **✅ Prerequisites:**    
+Clone the Dev repository and follow its setup instructions.
 
-   Install Jenkins and necessary plugins - Git ,Github,Pipeline , Maven and Allure plugins ( these plugins can be installed via Jenkins UI )
-   
-   Ngrok (for development purpose)
+API Endpoints covered in test scenarios:
 
-## **STEPS To be followed for CI/CD:** ( for development purpose - testing env)
+POST /signup – Register a new user
 
-1) Need to add jenkinsFile in Dev repo - which is to build dev code and trigger QA automation
+POST /login – Authenticate and retrieve a token
 
-<pre lang="groovy"><code>pipeline { agent any stages { stage('Build Dev') { steps { echo 'Build or test dev code here' } } stage('Trigger QA Automation') { steps { build job: 'QA-Repo' } } } } </code></pre>
+POST /books – Add a new book
 
-  
-2) JenkinsFile in QA repo has to be included to run and generate report
+PUT /books/{id} – Update book details
 
-<pre lang="groovy"><code>pipeline { agent any tools { maven 'Maven 3.6.3' allure 'Allure' } stages { stage('Checkout') { steps { git url: '&lt;gitUrl&gt;', branch: '&lt;BranchName&gt;' } } stage('Build and Test') { steps { sh 'mvn clean test' } } stage('Generate Allure Report') { steps { sh 'mvn allure:report' } } } post { always { allure([ includeProperties: false, jdk: '', results: [[path: 'target/allure-results']] ]) } } }</code></pre>
+GET /books/{id} – Retrieve book by ID
 
-3) Launch the Jenkins ( using jenkins command ) in Local , once launched , install all the plugins needed
-4) Create 2 jobs as type pipeline for configuring Dev and QA repo
-5) Configure the repo in their respective jobs and also make the configuration as necessary
-6) In Dev repo Webhooks - Need to add payload url for triggering the Dev Job whenever dev commits the code
-7) Since github can't access your local , run ngrok command to let public access for your local server
+GET /books – List all books
 
-           ngrok http http://localhost:8080 
-8) It will generate the url , use that as payload url along with repo name (eg : https://gitUserName:gitPassword@ngrokServerProvided/job/DevRepo/build )//Replace with your dev repo name
-9) Now commit any changes in Dev repo . The build will be triggered in Dev jenkins job and on success,QA automation job will be run and generate Allure report at last
-10) Now for every commit dev makes , the Dev build and QA automation will get triggered .
+DELETE /books/{id} – Remove a book
 
-                                                        END
+Run tests using the Cucumber TestNG Runner.
 
+After execution, view reports at target/allure-results.
 
-   
+🔄 CI/CD Pipeline Integration
+🧰 Required Tools
+Jenkins installed locally
+
+Required Jenkins plugins:
+
+Git
+
+GitHub
+
+Pipeline
+
+Maven Integration
+
+Allure Reporting
+
+Ngrok for local tunneling (development/test environments)
+
+🔃 CI/CD Flow: Development to QA
+1. Jenkins Pipeline – Dev Repo (Triggers QA Automation)
+groovy
+Copy
+Edit
+pipeline {
+    agent any
+    stages {
+        stage('Build Dev') {
+            steps {
+                echo 'Building dev code...'
+            }
+        }
+        stage('Trigger QA Automation') {
+            steps {
+                build job: 'QA-Repo'
+            }
+        }
+    }
+}
+2. Jenkins Pipeline – QA Repo (Runs Tests + Reports)
+groovy
+Copy
+Edit
+pipeline {
+    agent any
+    tools {
+        maven 'Maven 3.6.3'
+        allure 'Allure'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: '<GIT_REPO_URL>', branch: '<BRANCH_NAME>'
+            }
+        }
+        stage('Build and Test') {
+            steps {
+                sh 'mvn clean test'
+            }
+        }
+        stage('Generate Allure Report') {
+            steps {
+                sh 'mvn allure:report'
+            }
+        }
+    }
+    post {
+        always {
+            allure([
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'target/allure-results']]
+            ])
+        }
+    }
+}
+🌐 Webhook Setup for Auto-Triggering Builds
+Launch Jenkins locally (http://localhost:8080)
+
+Set up 2 Jenkins pipeline jobs:
+
+One for Dev repo
+
+One for QA Automation repo
+
+Configure GitHub webhook in Dev repo:
+
+Use Ngrok to expose local Jenkins:
+
+nginx
+Copy
+Edit
+ngrok http http://localhost:8080
+Use generated URL in GitHub Webhook:
+
+php-template
+Copy
+Edit
+https://<ngrok-url>/job/<DevJobName>/build?token=<your-token>
+Push changes to Dev repo → Dev build triggers → QA job runs → Allure report generated.
+
+📁 Reports & Artifacts
+Reports generated at:
+target/allure-results → Open in Allure Report Viewer
+
+📌 Summary
+This framework offers a modular and CI-ready approach for end-to-end API testing with:
+
+Clean BDD structure
+
+Parallel execution & retries
+
+CI/CD with Jenkins
+
+Interactive reporting
